@@ -21,13 +21,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.cowa_app.compose.TalkieApp
+import com.example.cowa_app.data.repository.AppInitializer
 import com.example.cowa_app.ui.components.DesignTheme
 import com.example.cowa_app.ui.components.GlobalToast
 import com.example.cowa_app.ui.theme.TalkieAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class GardenActivity : ComponentActivity() {
+    @Inject
+    lateinit var appInitializer: AppInitializer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,5 +46,11 @@ class GardenActivity : ComponentActivity() {
                 }
             }
         }
+
+        appInitializer.checkLoginStatusAndInitialize()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

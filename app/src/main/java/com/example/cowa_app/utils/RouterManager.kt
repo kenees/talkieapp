@@ -1,5 +1,6 @@
 package com.example.cowa_app.utils
 
+import android.util.Log
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import javax.inject.Inject
@@ -10,25 +11,48 @@ class RouterManager @Inject constructor() {
 
     private var navController: NavHostController? = null
 
+    private var callback: (() -> Unit)? = null
+
     // 设置 NavController（在根 Composable 中调用）
     fun setNavController(navController: NavHostController) {
+        Log.d("Navigate", "setNavController")
         this.navController = navController
+        if (callback != null) {
+            callback.let {
+                it?.invoke()
+            }
+        }
     }
 
     // 导航方法
     fun navigate(route: String, navOptions: NavOptions? = null) {
-        navController?.navigate(route, navOptions)
+        if (navController == null) {
+            callback = {
+                navigate(route, navOptions)
+            }
+        } else {
+            navController?.navigate(route, navOptions)
+        }
     }
 
     fun navigateToHome() {
-        navController?.navigate("home") {
-            popUpTo("login") { inclusive = true }
+        if (navController == null) {
+            callback = { navigateToHome() }
+        } else {
+            navController?.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
         }
     }
 
     fun navigateToLogin() {
-        navController?.navigate("login") {
-            popUpTo("home") { inclusive = true }
+        if (navController == null) {
+            callback = { navigateToLogin() }
+        } else {
+            navController?.navigate("login") {
+                Log.d("Navigate", "to login  ")
+                popUpTo("home") { inclusive = true }
+            }
         }
     }
 
@@ -44,14 +68,14 @@ class RouterManager @Inject constructor() {
         navController?.popBackStack()
     }
 
-    // 带参数的导航
-    fun navigateToDetail(itemId: String) {
-        navigate("detail/$itemId")
-    }
-
-    fun navigateToChat(chatId: String, userName: String) {
-        navigate("chat/${chatId}?userName=${userName}")
-    }
+//    // 带参数的导航
+//    fun navigateToDetail(itemId: String) {
+//        navigate("detail/$itemId")
+//    }
+//
+//    fun navigateToChat(chatId: String, userName: String) {
+//        navigate("chat/${chatId}?userName=${userName}")
+//    }
 
     // 获取当前路由
     fun getCurrentRoute(): String? {

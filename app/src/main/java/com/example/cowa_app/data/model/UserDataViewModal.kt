@@ -17,9 +17,15 @@ class UserDataViewModal @Inject constructor(
 
     // 将 Flow 转换为 StateFlow，便于 UI 观察
     val loginDisabled = userDataRepository.loginDisabled.stateIn(
+        scope = viewModelScope, // 作用域
+        started = SharingStarted.WhileSubscribed(5000), // 启动策略
+        initialValue = false
+    )
+
+    val userPreferences = userDataRepository.userPreferences.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = false
+        initialValue = null
     )
 
     fun loginDisabledHandle(value: Boolean) {
@@ -31,6 +37,12 @@ class UserDataViewModal @Inject constructor(
     fun login(context: Context) {
         viewModelScope.launch {
             userDataRepository.login(context)
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            userDataRepository.logout()
         }
     }
 }

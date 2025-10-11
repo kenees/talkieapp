@@ -1,6 +1,5 @@
 package com.example.cowa_app.compose.login
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,8 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.example.cowa_app.R
+import com.example.cowa_app.data.model.AppViewModel
 import com.example.cowa_app.data.model.GlobalCompViewModal
 import com.example.cowa_app.data.model.UserDataViewModal
 import com.example.cowa_app.ui.components.PageScreen
@@ -39,11 +38,11 @@ import com.example.cowa_app.ui.components.dp
 import com.example.cowa_app.ui.theme.Text_16_400
 import com.example.cowa_app.ui.theme.Text_24_400
 import com.example.cowa_app.ui.theme.Text_28_400
+import com.example.cowa_app.utils.RouterManager
 
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController,
 ) {
     PageScreen() {
         Column(
@@ -56,7 +55,9 @@ fun LoginScreen(
 }
 
 @Composable
-fun LoginBar() {
+fun LoginBar(
+    routerManager: RouterManager = hiltViewModel<AppViewModel>().routerManager
+) {
     Row (
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -68,14 +69,13 @@ fun LoginBar() {
             modifier = Modifier.width(140.dp).height(40.dp),
             contentScale = ContentScale.Crop,
         )
-
         Box(
             modifier = Modifier
                 .width(90.dp)
                 .height(40.dp)
                 .background(Color(255, 255, 255, 51), RoundedCornerShape(8.dp))
                 .clickable {
-                    Log.d("LoginScreen: ", "click")
+                    routerManager.navigate("setting")
                 },
             contentAlignment = Alignment.Center
         ) {

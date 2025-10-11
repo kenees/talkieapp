@@ -27,6 +27,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cowa_app.compose.home.HomeScreen
 import com.example.cowa_app.compose.login.LoginScreen
+import com.example.cowa_app.compose.setting.AboutScreen
+import com.example.cowa_app.compose.setting.MyInfoScreen
 import com.example.cowa_app.compose.setting.SettingScreen
 import com.example.cowa_app.data.model.AppViewModel
 
@@ -48,27 +50,33 @@ fun TalkieApp() {
 fun TalkieAppNavHost(
     navController: NavHostController
 ) {
-    val activity = (LocalContext.current as Activity)
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
             HomeScreen(
                 navController = navController
             )
         }
+        // 设置相关
         composable(
-            route = Screen.Setting.route,
-            arguments = Screen.Setting.navArguments
+            route = Screen.Setting.route, arguments = Screen.Setting.navArguments
         ) {
-            SettingScreen(
-                navController = navController
-            )
+            SettingScreen()
         }
+        composable(
+            route = Screen.About.route
+        ) {
+            AboutScreen()
+        }
+        composable(
+            route = Screen.MyInfo.route
+        ) {
+            MyInfoScreen()
+        }
+
         composable(
             route = Screen.Login.route
         ) {
-            LoginScreen(
-                navController = navController
-            )
+            LoginScreen()
         }
     }
 }

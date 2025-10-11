@@ -17,226 +17,152 @@
 package com.example.cowa_app.compose.setting
 
 import android.util.Log
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.example.cowa_app.R
-import com.example.cowa_app.compose.Screen
-import com.example.cowa_app.data.model.CounterViewModel
-import com.example.cowa_app.ui.theme.TalkieAppTheme
-//import com.example.cowa_app.compose.garden.GardenScreen
-//import com.example.cowa_app.compose.plantlist.PlantListScreen
-//import com.example.cowa_app.data.Plant
-//import com.example.cowa_app.ui.SunflowerTheme
-//import com.example.cowa_app.viewmodels.PlantListViewModel
-import kotlinx.coroutines.launch
+import com.example.cowa_app.data.model.AppViewModel
+import com.example.cowa_app.data.model.UserDataViewModal
+import com.example.cowa_app.ui.components.PageBar
+import com.example.cowa_app.ui.components.PageScreen
+import com.example.cowa_app.ui.components.dp
+import com.example.cowa_app.ui.theme.Text_28_400
+import com.example.cowa_app.utils.DeviceUtils
+import com.example.cowa_app.utils.RouterManager
 
-enum class TalkieAppPage(
+private enum class MenuDataList(
     @StringRes val titleResId: Int,
-    @DrawableRes val drawableResId: Int
-) {
-    MY_GARDEN(R.string.my_garden_title, R.drawable.ic_my_garden_active),
-    PLANT_LIST(R.string.my_garden_title, R.drawable.ic_my_garden_active)
+    val id: Int,
+    ) {
+//    SERVER_CONFIG(R.string.setting_menu_server),
+    SYSTEM_SETTING(R.string.setting_menu_system, 1),
+    CLEAR_CACHE(R.string.setting_menu_cache, 2),
+    ABOUT(R.string.setting_menu_about, 3),
+    MY(R.string.setting_menu_my, 4),
+    LOGOUT(R.string.setting_menu_logout, 5)
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-@Composable
-fun SettingScreen(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-    onPlantClick: () -> Unit = {},
-    viewModel: CounterViewModel = hiltViewModel(),
-    pages: Array<TalkieAppPage> = TalkieAppPage.values()
-) {
-    val pagerState = rememberPagerState(pageCount = { pages.size })
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
-    Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            HomeTopAppBar(
-                pagerState = pagerState,
-                onFilterClick = { },
-                scrollBehavior = scrollBehavior
-            )
-        }
-    ) { contentPadding ->
-        HomePagerScreen1(
-//            onPlantClick = onPlantClick,
-            navController = navController,
-            pagerState = pagerState,
-            pages = pages,
-            Modifier.padding(top = contentPadding.calculateTopPadding())
-        )
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomePagerScreen1(
-//    onPlantClick: (Plant) -> Unit,
-    navController: NavHostController,
-    pagerState: PagerState,
-    pages: Array<TalkieAppPage>,
-    modifier: Modifier = Modifier,
+fun SettingScreen(
+    routerManager: RouterManager = hiltViewModel<AppViewModel>().routerManager
 ) {
-    Column(modifier) {
-        val coroutineScope = rememberCoroutineScope()
-
-        // Tab Row
-        TabRow(
-            selectedTabIndex = pagerState.currentPage
+    PageScreen() {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp, top = 20.dp, start = 28.dp, end = 28.dp)
         ) {
-            pages.forEachIndexed { index, page ->
-                val title = stringResource(id = page.titleResId)
-                Tab(
-                    selected = pagerState.currentPage == index,
-                    onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                    text = { Text(text = "setting page...") },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = page.drawableResId),
-                            contentDescription = title
-                        )
-                    },
-                    unselectedContentColor = MaterialTheme.colorScheme.secondary
-                )
-            }
-        }
+            PageBar(
+                actionLeft = { Box {} },
+                title = "设置",
+                actionRight = { Box {} },
+            ) {}
 
-        // Pages
-        HorizontalPager(
-            modifier = Modifier.background(MaterialTheme.colorScheme.background),
-            state = pagerState,
-            verticalAlignment = Alignment.Top
-        ) { index ->
-            when (pages[index]) {
-                TalkieAppPage.MY_GARDEN -> {
-//                    GardenScreen(
-//                        Modifier.fillMaxSize(),
-//                        onAddPlantClick = {
-//                            coroutineScope.launch {
-//                                pagerState.scrollToPage(SunflowerPage.PLANT_LIST.ordinal)
-//                            }
-//                        },
-//                        onPlantClick = {
-//                            onPlantClick(it.plant)
-//                        })
-                    Button(
-                        onClick = {
-                            Log.d("TEST", "点击返回")
-                            navController.navigateUp()
-                        }
-                    ) {
-                        Text(
-                            color = Color(255, 1, 1),
-                            text = stringResource(id = R.string.app_name),
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
-                }
-
-                TalkieAppPage.PLANT_LIST -> {
-//                    PlantListScreen(
-//                        onPlantClick = onPlantClick,
-//                        modifier = Modifier.fillMaxSize(),
-//                    )
+            LazyColumn(
+                modifier = Modifier.fillMaxHeight()
+//                    .verticalScroll(rememberScrollState()) // 垂直滚动
+            ) {
+                items(MenuDataList.entries.toTypedArray()) { menu ->
+                    ActionItem(
+                        menu = menu,
+                        routerManager
+                    )
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeTopAppBar(
-    pagerState: PagerState,
-    onFilterClick: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior,
-    modifier: Modifier = Modifier,
-    viewModel: CounterViewModel = hiltViewModel(),
+private fun ActionItem(
+    menu: MenuDataList,
+    routerManager: RouterManager,
+    appViewModel: AppViewModel = hiltViewModel<AppViewModel>(),
+    userDataViewModel: UserDataViewModal = hiltViewModel<UserDataViewModal>(),
 ) {
-//    val count by viewModel.count.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    var renderKey by remember { mutableStateOf(true) }
 
-    val count by viewModel.count.collectAsStateWithLifecycle()
-//    val count = viewModel.count.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        if (menu.id == 4 || menu.id == 5) {
+            renderKey = appViewModel.checkLoginStatus()
+        }
+    }
 
-    CenterAlignedTopAppBar(
-        title = {
-            Button(
-                onClick = {
-                    Log.d("TEST", "点击测试")
-                    viewModel.increment()
+    if (renderKey) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
+                .background(Color(44, 46, 50), RoundedCornerShape(16.dp))
+                .padding(top = 17.dp, bottom = 17.dp, start = 20.dp, end = 20.dp)
+                .clickable {
+                    if (menu.id == 1) {
+                        DeviceUtils.goToSetting(context)
+                    } else if (menu.id == 2) {
+                        DeviceUtils.cleanCache(context)
+                    } else if (menu.id == 3) {
+                        routerManager.navigate("about")
+                    } else if (menu.id == 4) {
+                        routerManager.navigate("myInfo")
+                    } else if (menu.id == 5) {
+                        userDataViewModel.logout()
+                    }
                 }
+        ) {
+            Row(
+                Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    color = Color(255, 21, 1),
-                    text = "+++ ${count}",
-                    style = MaterialTheme.typography.headlineSmall
+                    text = stringResource(id = menu.titleResId),
+                    style = MaterialTheme.typography.Text_28_400,
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.expand),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(25.dp)
+                        .height(25.dp)
+                        .rotate(-90f),
+                    contentScale = ContentScale.Crop,
                 )
             }
-
-        },
-        modifier = modifier,
-        actions = {
-            if (pagerState.currentPage == TalkieAppPage.PLANT_LIST.ordinal) {
-                IconButton(onClick = onFilterClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_filter_list_24dp),
-                        contentDescription = stringResource(
-                            id = R.string.menu_filter_by_grow_zone
-                        )
-                    )
-                }
-            }
-        },
-        scrollBehavior = scrollBehavior
-    )
+        }
+    }
 }
-
-//@OptIn(ExperimentalFoundationApi::class)
-//@Preview
-//@Composable
-//private fun HomeScreenPreview() {
-//    TalkieAppTheme {
-//        val pages = TalkieAppPage.values()
-//        HomePagerScreen(
-////            onPlantClick = {},
-//            pagerState = rememberPagerState(pageCount = { pages.size }),
-//            pages = pages
-//        )
-//    }
-//}

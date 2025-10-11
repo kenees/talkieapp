@@ -27,6 +27,8 @@ data class UserPreferences(
     val phone: String = "",
     val tenant: String = "",
     val userName: String = "",
+    val category: String = "",
+    val categoryId: String = "",
     val loginTime: Long = 0,
     val isLoggedIn: Boolean = false
 )
@@ -46,6 +48,8 @@ class UserPreferencesManager @Inject constructor(
         val PHONE = stringPreferencesKey("phone")
         val TENANT = stringPreferencesKey("tenant")
         val USER_NAME = stringPreferencesKey("user_name")
+        val CATEGORY = stringPreferencesKey("category")
+        val CATEGORY_ID = stringPreferencesKey("category_id")
         val LOGIN_TIME = longPreferencesKey("login_time")
         val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
     }
@@ -69,6 +73,8 @@ class UserPreferencesManager @Inject constructor(
                 phone = preferences[PreferencesKeys.PHONE] ?: "",
                 tenant = preferences[PreferencesKeys.TENANT] ?: "",
                 userName = preferences[PreferencesKeys.USER_NAME] ?: "",
+                category = preferences[PreferencesKeys.CATEGORY] ?: "",
+                categoryId = preferences[PreferencesKeys.CATEGORY_ID] ?: "",
                 loginTime = preferences[PreferencesKeys.LOGIN_TIME] ?: 0,
                 isLoggedIn = preferences[PreferencesKeys.IS_LOGGED_IN] ?: false
             )
@@ -85,6 +91,8 @@ class UserPreferencesManager @Inject constructor(
             preferences[PreferencesKeys.PHONE] = userPrefs.phone
             preferences[PreferencesKeys.TENANT] = userPrefs.tenant
             preferences[PreferencesKeys.USER_NAME] = userPrefs.userName
+            preferences[PreferencesKeys.CATEGORY] = userPrefs.category
+            preferences[PreferencesKeys.CATEGORY_ID] = userPrefs.categoryId
             preferences[PreferencesKeys.LOGIN_TIME] = userPrefs.loginTime
             preferences[PreferencesKeys.IS_LOGGED_IN] = userPrefs.isLoggedIn
         }

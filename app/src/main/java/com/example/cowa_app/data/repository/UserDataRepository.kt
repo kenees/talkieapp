@@ -85,6 +85,7 @@ class UserDataRepository @Inject constructor(
 
     suspend fun logout() {
         userPrefsManager.clearUserPreferences()
+        routerManager.navigateToLogin()
     }
 
     suspend fun getCurrentToken(): String? {

@@ -22,7 +22,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -48,18 +47,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.cowa_app.R
 import com.example.cowa_app.compose.Screen
 import com.example.cowa_app.data.model.CounterViewModel
-import com.example.cowa_app.ui.theme.TalkieAppTheme
-//import com.example.cowa_app.compose.garden.GardenScreen
-//import com.example.cowa_app.compose.plantlist.PlantListScreen
-//import com.example.cowa_app.data.Plant
-//import com.example.cowa_app.viewmodels.PlantListViewModel
 import kotlinx.coroutines.launch
 
 enum class TalkieAppPage(
@@ -125,10 +118,10 @@ fun HomePagerScreen(
                     onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
                     text = { Text(text = "$title aa") },
                     icon = {
-                        Icon(
-                            painter = painterResource(id = page.drawableResId),
-                            contentDescription = title
-                        )
+//                        Icon(
+//                            painter = painterResource(id = page.drawableResId),
+//                            contentDescription = title
+//                        )
                     },
                     unselectedContentColor = MaterialTheme.colorScheme.secondary
                 )
@@ -157,12 +150,12 @@ fun HomePagerScreen(
                     Button(
                         onClick = {
                             Log.d("TEST", "点击前往setting")
-                            navController.navigate(Screen.Setting.route)
+                            navController.navigate(Screen.Login.route)
                         }
                     ) {
                         Text(
                             color = Color(255, 21, 1),
-                            text = stringResource(id = R.string.app_name),
+                            text = "login",
                             style = MaterialTheme.typography.headlineSmall
                         )
                     }
@@ -170,12 +163,12 @@ fun HomePagerScreen(
                     Button(
                         onClick = {
                             Log.d("TEST", "点击前往setting")
-                            navController.navigate(Screen.Login.route)
+                            navController.navigate(Screen.Setting.route)
                         }
                     ) {
                         Text(
                             color = Color(255, 21, 1),
-                            text = "login page",
+                            text = "setting",
                             style = MaterialTheme.typography.headlineSmall
                         )
                     }

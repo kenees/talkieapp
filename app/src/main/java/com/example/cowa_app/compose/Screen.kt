@@ -28,6 +28,10 @@ sealed class Screen(
     data object Home : Screen("home")
     data object Setting : Screen("setting")
 
+    data object About: Screen("about")
+
+    data object MyInfo: Screen("myInfo")
+
     data object PlantDetail : Screen(
         route = "plantDetail/{plantId}",
         navArguments = listOf(navArgument("plantId") {

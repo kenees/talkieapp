@@ -1,16 +1,20 @@
 package com.example.cowa_app.utils
 
+import AppEvent
+import AppEventBus
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.devicemanager.DeviceManager
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
-import android.app.devicemanager.DeviceManager
 
 object DeviceUtils {
 
@@ -23,17 +27,18 @@ object DeviceUtils {
     @SuppressLint("HardwareIds")
     fun getAndroidId(context: Context): String {
 
-        var id = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: ""
+        var id =
+            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: ""
 
-         try {
+        try {
             val process = Runtime.getRuntime().exec("getprop persist.netd.stable_secret")
-             val reader = BufferedReader(InputStreamReader(process.inputStream))
-             val model = reader.readLine()
-             id = "$id-$model"
-             Log.d("Device", "exec persist.netd.stable_secret=$model")
+            val reader = BufferedReader(InputStreamReader(process.inputStream))
+            val model = reader.readLine()
+            id = "$id-$model"
+            Log.d("Device", "exec persist.netd.stable_secret=$model")
         } catch (e: Exception) {
-             Log.e("Device", e.toString())
-             e.printStackTrace()
+            Log.e("Device", e.toString())
+            e.printStackTrace()
         }
 
         return id
@@ -91,11 +96,113 @@ object DeviceUtils {
      *  只有对讲机才可以利用这个sdk获取到imei
      */
     fun getImei(): String {
-        try {
-            return deviceManager.getImei()
+        return try {
+            deviceManager.imei
         } catch (e: Exception) {
-            return ""
+            ""
         }
     }
 
+    /**
+     *  前往系统设置页面
+     */
+    fun goToSetting(context: Context) {
+        val intent = Intent(Settings.ACTION_SETTINGS)
+        context.startActivity(intent)
+    }
+
+    /**
+     *  清除缓存
+     */
+    fun cleanCache(context: Context) {
+        try {
+            clearInternalCache(context)
+            clearExternalCache(context)
+            clearCustomDirectories(context)
+            AppEventBus.emitFromAnywhere(AppEvent.ShowToast("清除成功"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     *  清除内部缓存
+     */
+    fun clearInternalCache(context: Context) {
+        try {
+            val cacheDir = context.cacheDir
+            if (cacheDir.exists() && cacheDir.isDirectory) {
+                cacheDir.deleteRecursively()
+                cacheDir.mkdirs()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * 清除外部缓存
+     */
+    fun clearExternalCache(context: Context) {
+        try {
+            val externalCacheDir = context.externalCacheDir
+            externalCacheDir?.let { dir ->
+                if (dir.exists() && dir.isDirectory) {
+                    dir.deleteRecursively()
+                    dir.mkdirs()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * 清除自定义目录
+     */
+    private fun clearCustomDirectories(context: Context) {
+        try {
+            // 示例：清除下载目录
+            val downloadDir = File(context.getExternalFilesDir(null), "downloads")
+            clearDirectory(downloadDir)
+
+            // 示例：清除日志目录
+            val logDir = File(context.filesDir, "logs")
+            clearDirectory(logDir)
+
+            // 示例：清除图片缓存目录
+            val imageCacheDir = File(context.externalCacheDir, "images")
+            clearDirectory(imageCacheDir)
+
+            // 添加你的其他自定义目录...
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * 清除指定目录下的所有文件
+     */
+    fun clearDirectory(directory: File?): Boolean {
+        return try {
+            if (directory == null || !directory.exists()) {
+                return true
+            }
+
+            if (directory.isDirectory) {
+                val files = directory.listFiles()
+                files?.forEach { file ->
+                    if (file.isDirectory) {
+                        clearDirectory(file)
+                    } else {
+                        file.delete()
+                    }
+                }
+            }
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 }
