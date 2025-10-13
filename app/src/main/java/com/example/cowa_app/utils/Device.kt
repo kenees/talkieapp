@@ -205,4 +205,9 @@ object DeviceUtils {
             false
         }
     }
+
+    /**
+     *  设置cpu唤醒锁，防止休眠
+     */
+
 }

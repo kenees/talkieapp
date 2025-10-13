@@ -1,6 +1,7 @@
 package com.example.cowa_app.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -50,7 +51,7 @@ fun PageScreen(
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.statusBars)
                 // .navigationBarsPadding()
-                .padding(bottom = 16.dp)  // 底部留一些空间
+                .padding(bottom = 0.dp)  // 底部留一些空间
         ) {
             content()
         }

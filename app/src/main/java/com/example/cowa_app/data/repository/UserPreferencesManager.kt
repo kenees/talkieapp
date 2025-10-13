@@ -1,23 +1,22 @@
 package com.example.cowa_app.data.repository
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
+import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
-
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
 data class UserPreferences(
     val token: String = "",
@@ -98,15 +97,13 @@ class UserPreferencesManager @Inject constructor(
         }
     }
 
-
-
     @Volatile
     private var cachedToken: String? = null
 
     suspend fun getToken(): String {
-        cachedToken?.let { return  it }
+        cachedToken?.let { return it }
 
-        return  userPreferencesFlow.first().token.also { token -> cachedToken = token }
+        return userPreferencesFlow.first().token.also { token -> cachedToken = token }
     }
 
     // 单独更新 token
@@ -126,6 +123,6 @@ class UserPreferencesManager @Inject constructor(
     }
 
     fun getCachedToken(): String? {
-        return  cachedToken
+        return cachedToken
     }
 }

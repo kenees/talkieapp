@@ -32,6 +32,15 @@ class UserDataRepository @Inject constructor(
         _loginDisabled.value = value
     }
 
+    suspend fun isUserLoggedIn(): Boolean {
+        return try {
+            val userPrefs = userPreferences.first()
+            userPrefs.isLoggedIn && userPrefs.token.isNotEmpty()
+        } catch (e: Exception) {
+            Log.e("MyApplication", "检查登录状态失败: ${e.message}", e)
+            false
+        }
+    }
     suspend fun login(context: Context): NetworkResult<LoginResponse> {
         return try {
             val androidId = DeviceUtils.getAndroidId(context)

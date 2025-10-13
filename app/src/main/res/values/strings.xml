@@ -2,11 +2,17 @@
     <string name="app_name">talkieapp</string>
     <string name="menu_filter_by_grow_zone" translation_description="The label for the menu item to filter the displayed plants by grow zone.">Filter by grow zone</string>
     <string name="my_garden_title" translation_description="Title for the 'My garden' screen where the user can see the list of plants that have been added to their garden.">My garden</string>
-
+    <!--个人设置模块-->
     <string name="setting_menu_system">系统设置</string>
     <string name="setting_menu_cache">清除缓存</string>
     <string name="setting_menu_about">关于</string>
     <string name="setting_menu_my">我的</string>
     <string name="setting_menu_server">服务器设置</string>
     <string name="setting_menu_logout">退出登录</string>
+    <!-- 首页菜单   -->
+    <string name="home_menu_talkie">对讲</string>
+    <string name="home_menu_video">视频</string>
+    <string name="home_menu_event">事件</string>
+    <string name="home_menu_collaboration">协同</string>
+    <string name="home_menu_setting">设置</string>
 </resources>

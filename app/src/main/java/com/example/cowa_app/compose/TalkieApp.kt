@@ -16,10 +16,8 @@
 
 package com.example.cowa_app.compose
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -51,30 +49,35 @@ fun TalkieAppNavHost(
     navController: NavHostController
 ) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
-        composable(route = Screen.Home.route) {
-            HomeScreen(
-                navController = navController
-            )
+        composable(
+            route = Screen.Home.route,
+
+        ) {
+            HomeScreen()
         }
         // 设置相关
         composable(
-            route = Screen.Setting.route, arguments = Screen.Setting.navArguments
+            route = Screen.Setting.route, arguments = Screen.Setting.navArguments,
+
         ) {
             SettingScreen()
         }
         composable(
-            route = Screen.About.route
+            route = Screen.About.route,
+
         ) {
             AboutScreen()
         }
         composable(
-            route = Screen.MyInfo.route
+            route = Screen.MyInfo.route,
+
         ) {
             MyInfoScreen()
         }
 
         composable(
-            route = Screen.Login.route
+            route = Screen.Login.route,
+
         ) {
             LoginScreen()
         }

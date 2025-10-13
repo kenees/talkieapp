@@ -117,6 +117,9 @@ private fun ActionItem(
     var renderKey by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
+        if (menu.id == 1) {
+            appViewModel.startTimer()
+        }
         if (menu.id == 4 || menu.id == 5) {
             renderKey = appViewModel.checkLoginStatus()
         }
