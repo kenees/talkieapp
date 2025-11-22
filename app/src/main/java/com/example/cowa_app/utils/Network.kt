@@ -3,11 +3,16 @@ package com.example.cowa_app.utils
 import AppEvent
 import AppEventBus
 import android.util.Log
+import com.example.cowa_app.data.repository.ToastType
 import com.example.cowa_app.utils.NetworkUtils.TokenManager.getToken
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody
 import okhttp3.TlsVersion
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -39,6 +44,7 @@ object NetworkUtils {
         private var refreshToken: String = ""
 
         fun setToken(value: String) {
+            Log.d("NetWork", "setToken: $value")
             token = value
         }
 
@@ -87,7 +93,8 @@ object NetworkUtils {
                 return response
             } catch (e: Exception) {
                 Log.e("HTTP_ERROR", "Network request failed: ${e.message}")
-                throw e
+                AppEventBus.emitScope(AppEvent.ShowToast(e.message ?: "网络请求失败", ToastType.ERROR))
+                return createErrorResponse(chain.request(), e.message ?: "网络请求失败")
             }
         }
 
@@ -107,13 +114,13 @@ object NetworkUtils {
                         401 -> {
                             Log.d("BUSINESS_ERROR", "token过期")
                             val message = jsonObject.optString("message", "")
-                            AppEventBus.emitFromAnywhere(AppEvent.ShowToast(message))
+                            AppEventBus.emitScope(AppEvent.ShowToast(message, ToastType.ERROR))
                         }
 
                         else -> {
                             val message = jsonObject.optString("message", "")
                             Log.d("BUSINESS_ERROR", "$message")
-                            AppEventBus.emitFromAnywhere(AppEvent.ShowToast(message))
+                            AppEventBus.emitScope(AppEvent.ShowToast(message, ToastType.ERROR))
                         }
                     }
                 }
@@ -137,6 +144,20 @@ object NetworkUtils {
                 500 -> throw NetworkException("服务器内部错误", 500)
                 else -> throw NetworkException("网络请求失败: ${response.code}")
             }
+        }
+
+        private fun createErrorResponse(request: Request, errorMessage: String): Response {
+            return Response.Builder()
+                .request(request)
+                .protocol(Protocol.HTTP_1_1)
+                .code(599) // 自定义错误码，表示客户端错误
+                .message(errorMessage)
+                .body(
+                    ResponseBody.create(
+                    "application/json".toMediaTypeOrNull(),
+                    "{\"code\": 599, \"message\": \"$errorMessage\"}"
+                ))
+                .build()
         }
     }
 

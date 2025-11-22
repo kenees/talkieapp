@@ -5,10 +5,10 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.cowa_app.R
+import com.example.cowa_app.utils.DeviceUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +18,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AppTrackingService : Service() {
-
-    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -61,7 +59,7 @@ class AppTrackingService : Service() {
 
             startForeground(NOTIFICATION_ID, notification)
 
-            acquireWakeLock()
+            DeviceUtils.acquireWakeLock(this)
             // 开始执行
             startBackgroundWork()
         } catch (e: Exception) {
@@ -130,16 +128,6 @@ class AppTrackingService : Service() {
 //            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 //            notificationManager.notify(ServiceNotifications.NOTIFICATION_ID, it)
 //        }
-    }
-
-    private fun acquireWakeLock() {
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK,
-            "WalkieTalkie:CoreService"
-        )
-        wakeLock?.acquire()
-        Log.d("AppTrackingService", "WakeLock 已获取")
     }
 
     // base

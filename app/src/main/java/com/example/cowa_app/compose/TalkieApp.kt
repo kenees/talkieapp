@@ -16,6 +16,7 @@
 
 package com.example.cowa_app.compose
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,36 +49,119 @@ fun TalkieApp() {
 fun TalkieAppNavHost(
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route,
+    ) {
         composable(
             route = Screen.Home.route,
-
+            enterTransition = {
+                // 进入设置页面时，从右向左滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            exitTransition = {
+                // 关键：离开设置页面时（前进到其他页面），向左滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                // 从设置页面返回时，前一个页面从右侧滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popExitTransition = {
+                // 从设置页面返回时，设置页面向右滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
         ) {
             HomeScreen()
         }
-        // 设置相关
-        composable(
-            route = Screen.Setting.route, arguments = Screen.Setting.navArguments,
 
+        // 设置相关 - 修复关键在这里
+        composable(
+            route = Screen.Setting.route,
+            arguments = Screen.Setting.navArguments,
+            enterTransition = {
+                // 进入设置页面时，从右向左滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            exitTransition = {
+                // 关键：离开设置页面时（前进到其他页面），向左滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                // 从设置页面返回时，前一个页面从右侧滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popExitTransition = {
+                // 从设置页面返回时，设置页面向右滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
         ) {
             SettingScreen()
         }
+
+        // 其他页面使用相同的完整配置
         composable(
             route = Screen.About.route,
-
+            enterTransition = {
+                // 进入设置页面时，从右向左滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            exitTransition = {
+                // 关键：离开设置页面时（前进到其他页面），向左滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                // 从设置页面返回时，前一个页面从右侧滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popExitTransition = {
+                // 从设置页面返回时，设置页面向右滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
         ) {
             AboutScreen()
         }
+
         composable(
             route = Screen.MyInfo.route,
-
+            enterTransition = {
+                // 进入设置页面时，从右向左滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            exitTransition = {
+                // 关键：离开设置页面时（前进到其他页面），向左滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                // 从设置页面返回时，前一个页面从右侧滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popExitTransition = {
+                // 从设置页面返回时，设置页面向右滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
         ) {
             MyInfoScreen()
         }
 
         composable(
             route = Screen.Login.route,
-
+            enterTransition = {
+                // 进入设置页面时，从右向左滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            exitTransition = {
+                // 关键：离开设置页面时（前进到其他页面），向左滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                // 从设置页面返回时，前一个页面从右侧滑入
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popExitTransition = {
+                // 从设置页面返回时，设置页面向右滑出
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
         ) {
             LoginScreen()
         }

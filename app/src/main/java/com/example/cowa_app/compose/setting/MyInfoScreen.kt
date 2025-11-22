@@ -53,6 +53,14 @@ fun MyInfoScreen(
 
     val userPreferences by userDataViewModel.userPreferences.collectAsStateWithLifecycle()
 
+    val phone = userPreferences?.phone?.length?.let {
+        if (it > 11) {
+            userPreferences?.phone?.replace(Regex("(\\d{5})\\d{4}(\\d{4})"), "$1****$2")
+        } else {
+            userPreferences?.phone?.replace(Regex("(\\d{3})\\d{4}(\\d{4})"), "$1****$2")
+        }
+    }
+
     val aboutMenus = listOf<InfoValue>(
         InfoValue(
             title = "姓名:", value = userPreferences?.userName
@@ -61,7 +69,7 @@ fun MyInfoScreen(
             title = "所在项目:", value = userPreferences?.category
         ),
         InfoValue(
-            title = "联系电话:", value = userPreferences?.phone?.replace(Regex("(\\d{3})\\d{4}(\\d{4})"), "$1****$2")
+            title = "联系电话:", value = phone
         ),
     )
 

@@ -21,7 +21,13 @@ class GlobalCompViewModal @Inject constructor(
             AppEventBus.events.collect { event ->
                 when (event) {
                     is AppEvent.ShowToast -> {
-                        info(event.message)
+                        when (event.type) {
+                            ToastType.INFO -> { info(event.message)}
+                            ToastType.ERROR -> { error(event.message)}
+                            ToastType.LOADING -> {loading(event.message)}
+                            ToastType.SUCCESS -> {success(event.message)}
+                            ToastType.WARNING -> {warning(event.message)}
+                        }
                     }
                 }
             }

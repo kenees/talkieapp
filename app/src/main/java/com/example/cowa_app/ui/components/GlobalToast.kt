@@ -80,6 +80,7 @@ fun CustomToast(
         Box (
             modifier = Modifier
                 .background(Color(64,64,64), RoundedCornerShape(15.dp))
+                .padding(15.dp)
                 .wrapContentWidth() // 宽度根据内容自适应
                 .widthIn(max = with(LocalDensity.current) {
                     // 计算屏幕宽度的 70% 作为最大宽度
@@ -94,7 +95,7 @@ fun CustomToast(
                     Image(
                         painter = painterResource(id = R.drawable.loading),
                         contentDescription = null,
-                        modifier = Modifier.width(64.dp).height(64.dp).rotate(rotationAngle),
+                        modifier = Modifier.width(64.dp).height(79.dp).rotate(rotationAngle).padding(bottom = 15.dp),
                         contentScale = ContentScale.Crop,
                     )
                 } else if (type === ToastType.INFO) {
@@ -109,13 +110,13 @@ fun CustomToast(
                     Image(
                         painter = painterResource(id = id),
                         contentDescription = null,
-                        modifier = Modifier.width(64.dp).height(64.dp),
+                        modifier = Modifier.width(64.dp).height(79.dp).padding(bottom = 15.dp),
                         contentScale = ContentScale.Crop,
                     )
                 }
 
                 Text(
-                    modifier = Modifier.padding(15.dp, 15.dp, 15.dp, 15.dp),
+//                    modifier = Modifier.padding(15.dp, 15.dp, 15.dp, 15.dp),
                     text = message,
                     color = Color(255, 255, 255),
                     style = MaterialTheme.typography.Text_24_400,

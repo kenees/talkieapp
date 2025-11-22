@@ -41,14 +41,17 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cowa_app.R
 import com.example.cowa_app.ui.components.PageBar
 import com.example.cowa_app.ui.components.PageScreen
 import com.example.cowa_app.ui.components.dp
 import com.example.cowa_app.ui.theme.Text_24_400
 import com.example.cowa_app.utils.DeviceUtils
+import com.example.cowa_app.data.model.AppViewModel
 
 private data class ItemValue(
     val title: String = "", val onClick: (() -> Unit)? = null, val alpha: Float = 1.0f
@@ -56,13 +59,18 @@ private data class ItemValue(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AboutScreen() {
+fun AboutScreen(
+    appViewModel: AppViewModel = hiltViewModel<AppViewModel>(),
+) {
+    val context = LocalContext.current
     val imei = DeviceUtils.getImei()
+    val version = DeviceUtils.getAppVersion(context)
 //    val androidId = DeviceUtils.getAndroidId(LocalContext.current)
     val aboutMenus = listOf<ItemValue>(
         ItemValue(
-            title = "版本(-.-.-)", onClick = {
-                Log.d("AboutScreen", "检测版本更新")
+            title = "版本($version)", onClick = {
+                Log.d("AboutScreen", "检测版本更新: ${version.toString()}")
+                appViewModel.checkVersion(context)
             }, alpha = 1.0f
         ),
 //        ItemValue(

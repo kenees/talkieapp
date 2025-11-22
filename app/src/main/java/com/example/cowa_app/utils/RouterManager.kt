@@ -26,6 +26,7 @@ class RouterManager @Inject constructor() {
 
     // 导航方法
     fun navigate(route: String, navOptions: NavOptions? = null) {
+        if (getCurrentRoute() == route) return
         if (navController == null) {
             callback = {
                 navigate(route, navOptions)
@@ -36,22 +37,28 @@ class RouterManager @Inject constructor() {
     }
 
     fun navigateToHome() {
+        if (getCurrentRoute() == "home")  return
         if (navController == null) {
             callback = { navigateToHome() }
         } else {
             navController?.navigate("home") {
-                popUpTo("login") { inclusive = true }
+                popUpTo(0) {
+                    inclusive = true
+                }
             }
         }
     }
 
     fun navigateToLogin() {
+        if (getCurrentRoute() == "login") return
         if (navController == null) {
             callback = { navigateToLogin() }
         } else {
             navController?.navigate("login") {
                 Log.d("Navigate", "to login  ")
-                popUpTo("home") { inclusive = true }
+                popUpTo(0) {
+                    inclusive = true
+                }
             }
         }
     }

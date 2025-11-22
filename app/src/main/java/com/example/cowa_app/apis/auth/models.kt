@@ -11,9 +11,6 @@ data class LoginRequest (
 )
 
 data class LoginResponse(
-    val code: Int,
-    val data: Objects,
-    val body: Objects,
     val message: LoginMessage,
 )
 

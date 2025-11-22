@@ -1,5 +1,6 @@
 package com.example.cowa_app.apis
 
+import com.example.cowa_app.apis.app.AppService
 import com.example.cowa_app.apis.auth.AuthService
 import com.example.cowa_app.utils.NetworkUtils
 
@@ -17,9 +18,14 @@ object ApiModule {
         retrofit.create(AuthService::class.java)
     }
 
+    val appService: AppService by lazy {
+        retrofit.create(AppService::class.java)
+    }
 
     fun setToken(token: String) = NetworkUtils.TokenManager.setToken(token)
     fun setRefreshToken(token: String) = NetworkUtils.TokenManager.setRefreshToken(token)
     fun getToken() = NetworkUtils.TokenManager.getToken()
     fun clearToken() = NetworkUtils.TokenManager.clearToken()
+
+    fun getBaseUrl() = BASE_URL
 }

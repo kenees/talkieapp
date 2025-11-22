@@ -1,5 +1,6 @@
 package com.example.cowa_app.data.model
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.cowa_app.utils.RouterManager
@@ -8,6 +9,7 @@ import kotlinx.coroutines.Job
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.example.cowa_app.data.repository.UserDataRepository
+import com.example.cowa_app.utils.DeviceUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -15,9 +17,21 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AppViewModel @Inject constructor(
     val routerManager: RouterManager,
-    val userDataRepository: UserDataRepository
+    val userDataRepository: UserDataRepository,
 ) : ViewModel() {
     // 其他全局状态...
+    fun checkVersion(context: Context) {
+        try {
+            viewModelScope.launch {
+                DeviceUtils.checkVersion(context) { call ->
+                    call()
+                }
+            }
+        }  catch (e: Exception) {
+            Log.e("AppViewModal", e.message.toString())
+        }
+    }
+
     suspend fun checkLoginStatus(): Boolean {
         return try {
             Log.d("AppViewModel", "checkLoginStatus")

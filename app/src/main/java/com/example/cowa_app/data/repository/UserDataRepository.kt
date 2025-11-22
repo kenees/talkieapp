@@ -3,8 +3,9 @@ package com.example.cowa_app.data.repository
 import android.content.Context
 import android.util.Log
 import com.example.cowa_app.apis.ApiModule
+import com.example.cowa_app.apis.Response
+import com.example.cowa_app.apis.auth.LoginMessage
 import com.example.cowa_app.apis.auth.LoginRequest
-import com.example.cowa_app.apis.auth.LoginResponse
 import com.example.cowa_app.utils.DeviceUtils
 import com.example.cowa_app.utils.NetworkResult
 import com.example.cowa_app.utils.RouterManager
@@ -22,6 +23,7 @@ class UserDataRepository @Inject constructor(
 ) {
 
     val userPreferences: Flow<UserPreferences> = userPrefsManager.userPreferencesFlow
+
     // 使用 StateFlow 来保存计数状态，初始值为 0
     private val _loginDisabled = MutableStateFlow(false)
 
@@ -35,13 +37,19 @@ class UserDataRepository @Inject constructor(
     suspend fun isUserLoggedIn(): Boolean {
         return try {
             val userPrefs = userPreferences.first()
-            userPrefs.isLoggedIn && userPrefs.token.isNotEmpty()
+            if (userPrefs.isLoggedIn && userPrefs.token.isNotEmpty()) {
+                ApiModule.setToken(userPrefs.token)
+                return true
+            } else {
+                return false
+            }
         } catch (e: Exception) {
             Log.e("MyApplication", "检查登录状态失败: ${e.message}", e)
             false
         }
     }
-    suspend fun login(context: Context): NetworkResult<LoginResponse> {
+
+    suspend fun login(context: Context): NetworkResult<Response<LoginMessage>> {
         return try {
             val androidId = DeviceUtils.getAndroidId(context)
             val deviceName = DeviceUtils.getDeviceName(context)
